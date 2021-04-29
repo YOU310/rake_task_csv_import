@@ -9,9 +9,11 @@ namespace :import_csv do
       CSV.foreach(path, headers: true) do |row|
         list << row.to_h
       end
-      puts "インポーロ処理を開始"
+      puts "インポート処理を開始"
       begin
-        Member.create!(list)
+        Member.transaction do
+          Member.create!(list)
+        end
         puts "インポート完了"
       rescue StandardError => e
         puts "#{e.class}: #{e.message}"
